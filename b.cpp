@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 
 void OutputArray( int *A, int N ) {
     for (int i = 0; i < N; i++) {
@@ -12,9 +13,14 @@ void Swap( int *a, int *b ) {
     *b = tmp;
 }
 
+// [min; max]
+int Rand( int min, int max ) {
+    return min + (std::rand() % (max - min));
+}
+
 // [l; r)
 void Partition( int l, int r, int *A ) {
-    int pivot = A[(l + r) / 2];
+    int pivot = A[Rand(l, r - 1)];
     int i = l;
     int j = r - 1;
     
@@ -55,6 +61,7 @@ int main( int argc, char **argv ) {
         std::cin >> A[i];
     }
 
+    std::srand(42);
     QuickSort(A, N);
     OutputArray(A, N);
 
