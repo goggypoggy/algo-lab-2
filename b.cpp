@@ -12,14 +12,8 @@ void Swap( int *a, int *b ) {
     *b = tmp;
 }
 
-int allowed_steps = 5;
-
 // [l; r)
 void Partition( int l, int r, int *A ) {
-    if (r - l < 2) {
-        return;
-    }
-
     int pivot = A[(l + r) / 2];
     int i = l;
     int j = r - 1;
@@ -40,8 +34,12 @@ void Partition( int l, int r, int *A ) {
         }
     }
 
-    Partition(l, j + 1, A);
-    Partition(i, r, A);
+    if (l < j) {
+        Partition(l, j + 1, A);
+    }
+    if (i < r - 1) {
+        Partition(i, r, A);
+    }
 }
 
 void QuickSort( int *A, int N ) {
