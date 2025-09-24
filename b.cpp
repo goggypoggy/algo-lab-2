@@ -107,6 +107,29 @@ void BuildHeap( int *heap, int heap_size ) {
     }
 }
 
+void BuildSortedArray( int *heap, int heap_size ) {
+    for (int i = heap_size - 1; i >= 0; i--) {
+        Swap(heap + 0, heap + heap_size - 1);
+        heap_size--;
+        SiftDown(0, heap, heap_size);
+    }
+}
+
+void HeapSort( int *A, int N ) {
+    std::cout << "Unbuilt heap:\n";
+    HeapOut(A, N);
+
+    BuildHeap(A, N);
+
+    std::cout << "Built heap:\n";
+    HeapOut(A, N);
+
+    BuildSortedArray(A, N);
+
+    std::cout << "Sorted array:\n";
+    HeapOut(A, N);
+}
+
 int main( int argc, char **argv ) {
     ParseArgs(argc, argv);
     
@@ -118,13 +141,7 @@ int main( int argc, char **argv ) {
         std::cin >> A[i];
     }
 
-    std::cout << "Unbuilt heap:\n";
-    HeapOut(A, N);
-
-    BuildHeap(A, N);
-
-    std::cout << "Built heap:\n";
-    HeapOut(A, N);
+    HeapSort(A, N);
 
     return 0;
 }
