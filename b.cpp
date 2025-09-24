@@ -20,19 +20,9 @@ void Partition( int l, int r, int *A ) {
         return;
     }
 
-    std::cout << "/\"\" [" << l << "; " << r << ") partition \"\"\\\n";
-    std::cout << "Index:  ";
-    for (int i = l; i < r; i++) {
-        std::cout << i << (i == r - 1 ? "\n" : " ");
-    }
-    std::cout << "Start:  ";
-    OutputArray(A + l, r - l);
-
     int pivot = A[(l + r) / 2];
     int i = l;
     int j = r - 1;
-    
-    std::cout << "Pivot:  A[" << (l + r) / 2 << "] = " << pivot << std::endl;
     
     while (i <= j) {
         while (A[i] < pivot && i < r) {
@@ -49,11 +39,6 @@ void Partition( int l, int r, int *A ) {
             j--;
         }
     }
-
-    std::cout << "Result: ";
-    OutputArray(A + l, r - l);
-    std::cout << "i = " << i << ", j = " << j << std::endl;
-    std::cout << "\\__ [" << l << "; " << r << ") partition __/\n\n";
 
     Partition(l, j + 1, A);
     Partition(i, r, A);
