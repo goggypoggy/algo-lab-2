@@ -88,24 +88,10 @@ int main( int argc, char **argv ) {
         stability[i] = stab;
     }
 
-    std::cout << "Starting array:\n";
-    std::cout << "popularity: "; OutputFilter(I, popularity, N);
-    std::cout << "stability:  "; OutputFilter(I, stability, N);
-    std::cout << "index:      "; OutputIndex(I, N);
-    
     Sort(I, stability, N);
-
-    std::cout << "\nSorted by stability:\n";
-    std::cout << "popularity: "; OutputFilter(I, popularity, N);
-    std::cout << "stability:  "; OutputFilter(I, stability, N);
-    std::cout << "index:      "; OutputIndex(I, N);
-    
     Sort(I, popularity, N);
 
-    std::cout << "\nSorted by popularity:\n";
-    std::cout << "popularity: "; OutputFilter(I, popularity, N);
-    std::cout << "stability:  "; OutputFilter(I, stability, N);
-    std::cout << "index:      "; OutputIndex(I, N);
+    OutputIndex(I, N);
 
     return 0;
 }
