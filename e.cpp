@@ -4,6 +4,19 @@
 
 uint32_t cur = 0;  // беззнаковое 32-битное число
 
+void OutputArray( uint32_t *A, uint32_t N, uint32_t k, uint32_t pivot ) {
+    for (uint32_t i = 0; i < N; i++) {
+        if (i == k) {
+            std::cout << ">" << A[i] << "<";
+        } else if (A[i] == pivot) {
+            std::cout << "[" << A[i] << "]";
+        } else {
+            std::cout << A[i];
+        }
+        std::cout << (i == N - 1 ? "\n" : " ");
+    }
+}
+
 // Генератор 24-битного числа
 uint32_t nextRand24(uint32_t a, uint32_t b) {
     cur = cur * a + b;      // вычисляется с переполнениями по модулю 2^32
@@ -28,17 +41,17 @@ void swap(uint32_t *a, uint32_t *b) {
     *b = temp;
 }
 
-int SpecialPartition(uint32_t *arr, uint32_t l, uint32_t r, uint32_t k) {
+int Partition(uint32_t *arr, int l, int r) {
     uint32_t pivot = arr[rand(l, r)];
 
-    uint32_t i = l;
-    uint32_t j = r - 1;
+    int i = l;
+    int j = r - 1;
 
-    while (i <= j) {
+    while (i <= j && j != (uint32_t)-1) {        
         while (i < r && arr[i] < pivot) {
             i++;
         }
-
+        
         while (j >= l && arr[j] > pivot) {
             j--;
         }
@@ -49,13 +62,22 @@ int SpecialPartition(uint32_t *arr, uint32_t l, uint32_t r, uint32_t k) {
             j--;
         }
     }
+    
+    return i;
+}
 
-    if (arr[k] == pivot) {
-        return pivot;
-    } else if (arr[k] < pivot) {
-        return SpecialPartition(arr, l, j + 1, k);
+// [l; r)
+uint32_t QuickSearch(uint32_t *arr, int l, int r, int k) {
+    if (l == r - 1) {
+        return arr[l];
+    }
+
+    int mid = Partition(arr, l, r);
+
+    if (k < mid) {
+        return QuickSearch(arr, l, mid, k);
     } else {
-        return SpecialPartition(arr, i, r, k);
+        return QuickSearch(arr, mid, r, k);
     }
 }
 
@@ -70,7 +92,14 @@ int main() {
 
     for (uint32_t i = 0; i < n; i++) {
         arr[i] = nextRand32(a, b);  // генерируем i-й элемент
+        //std::cin >> arr[i];
     }
 
-    std::cout << SpecialPartition(arr, 0, n, k - 1);
+    std::cout << QuickSearch(arr, 0, n, k - 1);
 }
+
+/*
+7 3
+1 1
+8 5 4 6 2 7 9
+*/
