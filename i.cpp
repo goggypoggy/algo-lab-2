@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstdlib>
 #include <cstdint>
 
 uint32_t cur = 0;  // беззнаковое 32-битное число
@@ -24,7 +23,7 @@ uint32_t extra[kMaxN];
 int count[kDigCount];
 
 int getDigit( uint32_t num, int b ) {
-    return (num >> b) & (kDigCount - 1);
+    return (num >> (b * kBitsPerDigit)) & (kDigCount - 1);
 }
 
 void CountSort( uint32_t *arr, int n, int b ) {
@@ -33,17 +32,20 @@ void CountSort( uint32_t *arr, int n, int b ) {
         count[i] = 0;
     }
 
-    // count each element depending on type
+    // count each element depending on digit
     for (int i = 0; i < n; i++) {
         int dig = getDigit(arr[i], b);
         count[dig]++;
     }
 
     // leading sum
+    for (int i = 1; i < kDigCount; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // accounting for incorrect numeration
     for (int i = 0; i < kDigCount; i++) {
-        for (int j = i + 1; j < kDigCount; j++) {
-            count[j] += count[i];
-        }
+        count[i]--;
     }
 
     // assemble sorted array
@@ -64,6 +66,17 @@ void RadixSort( uint32_t *arr, int n ) {
     }
 }
 
+uint64_t CountSum( uint32_t *arr, int n ) {
+    uint64_t result = 0;
+
+    for (int i = 0; i < n; i++) {
+        uint64_t a = (uint64_t)arr[i] * (uint64_t)(i + 1);
+        result += a;
+    }
+
+    return result;
+}
+
 int main() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
@@ -79,6 +92,7 @@ int main() {
             arr[i] = nextRand32(a, b);  // генерируем i-й элемент
         }
 
-        // здесь будет ваш алгоритм
+        RadixSort(arr, n);
+        std::cout << CountSum(arr, n) << (t == 0 ? "" : "\n");
     }
 }

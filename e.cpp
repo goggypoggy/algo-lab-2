@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <iostream>
 
+const int kMaxN = 10'000'000;
+
 uint32_t cur = 0;  // беззнаковое 32-битное число
 
 void OutputArray( uint32_t *A, uint32_t N, uint32_t k, uint32_t pivot ) {
@@ -88,7 +90,7 @@ int main() {
     uint32_t n, k, a, b;
     std::cin >> n >> k >> a >> b;
 
-    uint32_t arr[n];
+    uint32_t arr[kMaxN];
 
     for (uint32_t i = 0; i < n; i++) {
         arr[i] = nextRand32(a, b);  // генерируем i-й элемент
