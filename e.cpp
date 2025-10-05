@@ -1,13 +1,12 @@
 #include <cstdint>
-#include <cstdlib>
 #include <iostream>
 
 const int kMaxN = 10'000'000;
 
 uint32_t cur = 0;  // беззнаковое 32-битное число
 
-void OutputArray( uint32_t *A, uint32_t N, uint32_t k, uint32_t pivot ) {
-    for (uint32_t i = 0; i < N; i++) {
+void OutputArray( uint32_t *A, uint32_t N, int k, uint32_t pivot ) {
+    for (int i = 0; i < N; i++) {
         if (i == k) {
             std::cout << ">" << A[i] << "<";
         } else if (A[i] == pivot) {
@@ -32,24 +31,26 @@ uint32_t nextRand32(uint32_t a, uint32_t b) {
     return (x << 8) ^ y;     // число от 0 до 2^32 - 1
 }
 
+#define RAND_MAX INT_MAX
+
 // [min; max)
-uint32_t rand( uint32_t min, uint32_t max ) {
-    return nextRand32(42, 42) % (max - min) + min;
+int Rand( int min, int max ) {
+    return std::rand() % (max - min) + min;
 }
 
-void swap(uint32_t *a, uint32_t *b) {
+void Swap(uint32_t *a, uint32_t *b) {
     uint32_t temp = *a;
     *a = *b;
     *b = temp;
 }
 
 int Partition(uint32_t *arr, int l, int r) {
-    uint32_t pivot = arr[rand(l, r)];
+    uint32_t pivot = arr[Rand(l, r)];
 
     int i = l;
     int j = r - 1;
 
-    while (i <= j && j != (uint32_t)-1) {        
+    while (i <= j) {        
         while (i < r && arr[i] < pivot) {
             i++;
         }
@@ -59,7 +60,7 @@ int Partition(uint32_t *arr, int l, int r) {
         }
 
         if (i <= j) {
-            swap(arr + i, arr + j);
+            Swap(arr + i, arr + j);
             i++;
             j--;
         }
@@ -90,7 +91,7 @@ int main() {
     uint32_t n, k, a, b;
     std::cin >> n >> k >> a >> b;
 
-    uint32_t arr[kMaxN];
+    uint32_t *arr = new uint32_t[n];
 
     for (uint32_t i = 0; i < n; i++) {
         arr[i] = nextRand32(a, b);  // генерируем i-й элемент
@@ -98,6 +99,8 @@ int main() {
     }
 
     std::cout << QuickSearch(arr, 0, n, k - 1);
+    delete[] arr;
+    return 0;
 }
 
 /*

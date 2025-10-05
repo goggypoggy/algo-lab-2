@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstdlib>
 
+#define RAND_MAX INT_MAX
+
 void OutputArray( int *A, int N ) {
     for (int i = 0; i < N; i++) {
         std::cout << A[i] << (i == N - 1 ? "\n" : " ");

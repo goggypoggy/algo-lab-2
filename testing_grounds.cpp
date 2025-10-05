@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <cstdlib>
 
 const int kOutputWidth = 8;
 
@@ -16,87 +17,93 @@ void OutputArray( Type *arr, int n ) {
     }
 }
 
-const int kMaxN = 50'000;
-const int kBitsPerDigit = 4;
-const int kDigCount = 16;
-uint32_t extra[kMaxN];
-int count[kDigCount];
+// TESTING GROUNDS ---------------------
 
-int getDigit( uint32_t num, int b ) {
-    return (num >> (b * kBitsPerDigit)) & (kDigCount - 1);
+const int kMaxN = 10'000'000;
+
+//#define RAND_MAX INT_MAX
+
+// [min; max)
+int Rand( int min, int max ) {
+    return std::rand() % (max - min) + min;
 }
 
-void CountSort( uint32_t *arr, int n, int b ) {
-    // initialize arrays
-    for (int i = 0; i < kDigCount; i++) {
-        count[i] = 0;
-    }
-
-    // count each element depending on digit
-    for (int i = 0; i < n; i++) {
-        int dig = getDigit(arr[i], b);
-        count[dig]++;
-    }
-
-    // leading sum
-    for (int i = 1; i < kDigCount; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // accounting for incorrect numeration
-    for (int i = 0; i < kDigCount; i++) {
-        count[i]--;
-    }
-
-    // assemble sorted array
-    for (int i = n - 1; i >= 0; i--) {
-        int dig = getDigit(arr[i], b);
-        extra[count[dig]--] = arr[i];
-    }
-
-    // copy memory
-    for (int i = 0; i < n; i++) {
-        arr[i] = extra[i];
-    }
+void Swap(uint32_t *a, uint32_t *b) {
+    uint32_t temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
-void RadixSort( uint32_t *arr, int n ) {
-    for (int b = 0; b < 32 / kBitsPerDigit; b++) {
-        CountSort(arr, n, b);
+int Partition(uint32_t *arr, int l, int r) {
+    uint32_t pivot = arr[Rand(l, r)];
+
+    int i = l;
+    int j = r - 1;
+
+    while (i <= j) {        
+        while (i < r && arr[i] < pivot) {
+            i++;
+        }
+        
+        while (j >= l && arr[j] > pivot) {
+            j--;
+        }
+
+        if (i <= j) {
+            Swap(arr + i, arr + j);
+            i++;
+            j--;
+        }
+    }
+    
+    return i;
+}
+
+// [l; r)
+uint32_t QuickSearch(uint32_t *arr, int l, int r, int k) {
+    if (l == r - 1) {
+        return arr[l];
+    }
+
+    int mid = Partition(arr, l, r);
+
+    if (k < mid) {
+        return QuickSearch(arr, l, mid, k);
+    } else {
+        return QuickSearch(arr, mid, r, k);
     }
 }
 
 int main( int argc, char **argv ) {
     int n;
-    uint32_t arr[kMaxN];
+    int k;
+    std::cin >> n >> k;
 
-    
-    /*
-    uint32_t testnum = 0x115;
-    std::cout << std::hex << testnum << ' ';
-    for (int b = 0; b < 8; b++) {
-        std::cout << std::hex << (testnum >> (b * kBitsPerDigit)) << ' ';
-    }
-    std::cout << '\n';
-    */
+    uint32_t *arr = new uint32_t[n];
+    std::srand(42);
 
-    std::cin >> n;
     for (int i = 0; i < n; i++) {
         std::cin >> arr[i];
     }
 
-    //OutputArrayHex(arr, n);
-    RadixSort(arr, n);
-    //OutputArrayHex(arr, n);
-    OutputArray(arr, n);
+    std::cout << QuickSearch(arr, 0, n, k - 1);
+    delete[] arr;
+    
+    return 0;
 }
 
 /*
-5
+5 1
 23 46 12 95 78
+12
 
-6
+5 3
+10 10 10 10 10
+10
+
+6 3
 12 130926 3941054950 2013898548 197852696 2753287507
+197852696
 
 10
 77328 93 5511095 467991221 83991 2200349 759124 445521 76123985 17774
