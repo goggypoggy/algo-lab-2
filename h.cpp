@@ -1,6 +1,7 @@
 #include <iostream>
+#include <cstdint>
 
-const int kMaxN = 500000;
+const int kMaxN = 10'000;
 
 void OutputArray( int *A, int N ) {
     for (int i = 0; i < N; i++) {
@@ -78,14 +79,8 @@ int main( int argc, char **argv ) {
 
     std::cin >> N;
     for (int i = 0; i < N; i++) {
-        int pop;
-        int stab;
-
-        std::cin >> pop >> stab;
-
+        std::cin >> popularity[i] >> stability[i];
         I[i] = i;
-        popularity[i] = pop;
-        stability[i] = stab;
     }
 
     Sort(I, stability, N);
@@ -93,5 +88,31 @@ int main( int argc, char **argv ) {
 
     OutputIndex(I, N);
 
+    int headliner_count = 1;
+    int headliners[kMaxN] = {I[N - 1]};
+    int highest_stab = stability[I[N - 1]];
+
+    for (int i = N - 2; i >= 0; i--) {
+        if (stability[I[i]] > highest_stab) {
+            headliners[headliner_count++] = I[i];
+            highest_stab = stability[I[i]];
+        }
+    }
+
+    std::cout << headliner_count << std::endl;
+    OutputIndex(headliners, headliner_count);
+
     return 0;
 }
+
+/*
+8   
+-1 1
+-1 4
+0 2
+0 10
+1 7
+1 9
+2 1
+2 3
+*/
